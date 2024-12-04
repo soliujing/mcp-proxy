@@ -23,10 +23,16 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
       const client = new Client({
         name: 'mcp-proxy-client',
         version: '1.0.0',
-      }, { capabilities: {} });
+      }, {
+        capabilities: {
+          prompts: {},
+          resources: { subscribe: true },
+          tools: {}
+        }
+      });
 
       await client.connect(transport);
-      console.log(`Client connected successfully to ${server.name}`);
+      console.log(`Connected to server: ${server.name}`);
 
       clients.push({
         client,
@@ -37,7 +43,6 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
       });
     } catch (error) {
       console.error(`Failed to connect to ${server.name}:`, error);
-      // Continue with other servers even if one fails
     }
   }
 

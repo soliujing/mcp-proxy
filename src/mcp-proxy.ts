@@ -21,9 +21,9 @@ import { createClients, ConnectedClient } from './client.js';
 import { Config, loadConfig } from './config.js';
 import { z } from 'zod';
 
-export const createServer = async (configPath: string) => {
+export const createServer = async () => {
   // Load configuration and connect to servers
-  const config = await loadConfig(configPath);
+  const config = await loadConfig();
   const connectedClients = await createClients(config.servers);
   console.log(`Connected to ${connectedClients.length} servers`);
 
@@ -91,11 +91,7 @@ export const createServer = async (configPath: string) => {
     }
 
     try {
-      console.log('Forwarding tool call to client:', {
-        name,
-        arguments: args,
-        client: clientForTool.name
-      });
+      console.log('Forwarding tool call:', name);
 
       // Use the correct schema for tool calls
       return await clientForTool.client.request(
@@ -127,11 +123,7 @@ export const createServer = async (configPath: string) => {
     }
 
     try {
-      console.log('Forwarding prompt request to client:', {
-        name,
-        arguments: request.params.arguments,
-        client: clientForPrompt.name
-      });
+      console.log('Forwarding prompt request:', name);
 
       // Match the exact structure from the example code
       const response = await clientForPrompt.client.request(

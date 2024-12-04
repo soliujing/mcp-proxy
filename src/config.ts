@@ -13,13 +13,14 @@ export interface Config {
   servers: ServerConfig[];
 }
 
-export const loadConfig = async (configPath: string): Promise<Config> => {
+export const loadConfig = async (): Promise<Config> => {
   try {
-    const absolutePath = resolve(process.cwd(), configPath);
-    const fileContents = await readFile(absolutePath, 'utf-8');
+    const configPath = resolve(process.cwd(), 'config.json');
+    const fileContents = await readFile(configPath, 'utf-8');
     return JSON.parse(fileContents);
   } catch (error) {
-    console.error(`Error loading config from ${configPath}:`, error);
-    throw new Error('Failed to load config file. Please provide a valid config.json file.');
+    console.error('Error loading config.json:', error);
+    // Return empty config if file doesn't exist
+    return { servers: [] };
   }
 }; 
