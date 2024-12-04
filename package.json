@@ -1,0 +1,32 @@
+{
+  "name": "mcp-proxy-server",
+  "version": "0.1.0",
+  "description": "An MCP proxy server that aggregates and serves multiple MCP resource servers through a single interface",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "mcp-proxy-server": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "@types/cors": "^2.8.17",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.11.24",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.3.3"
+  }
+}
