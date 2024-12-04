@@ -21,7 +21,7 @@ import { createClients, ConnectedClient } from './client.js';
 import { Config, loadConfig } from './config.js';
 import { z } from 'zod';
 
-export const createServer = async (configPath?: string) => {
+export const createServer = async (configPath: string) => {
   // Load configuration and connect to servers
   const config = await loadConfig(configPath);
   const connectedClients = await createClients(config.servers);

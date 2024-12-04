@@ -25,6 +25,40 @@ An MCP proxy server that aggregates and serves multiple MCP resource servers thr
 - Route prompt requests to appropriate backends
 - Handle multi-server prompt responses
 
+## Configuration
+
+The server requires a JSON configuration file that specifies the MCP servers to connect to. Copy the example config and modify it for your needs:
+
+```bash
+cp config.example.json config.json
+```
+
+Example config structure:
+```json
+{
+  "servers": [
+    {
+      "name": "Server 1",
+      "transport": {
+        "command": "/path/to/server1/build/index.js"
+      }
+    },
+    {
+      "name": "Server 2",
+      "transport": {
+        "command": "server2-command",
+        "args": ["--option1", "value1"]
+      }
+    }
+  ]
+}
+```
+
+The config file must be provided when running the server:
+```bash
+MCP_CONFIG_PATH=./config.json mcp-proxy-server
+```
+
 ## Development
 
 Install dependencies:
@@ -53,7 +87,10 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 {
   "mcpServers": {
     "mcp-proxy": {
-      "command": "/path/to/mcp-proxy-server/build/index.js"
+      "command": "/path/to/mcp-proxy-server/build/index.js",
+      "env": {
+        "MCP_CONFIG_PATH": "/absolute/path/to/your/config.json"
+      }
     }
   }
 }

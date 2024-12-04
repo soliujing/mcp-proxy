@@ -9,6 +9,9 @@ let cleanup: Awaited<ReturnType<typeof createServer>>['cleanup'];
 
 // Get config path from environment variable or use default
 const configPath = process.env.MCP_CONFIG_PATH;
+if (!configPath) {
+  throw new Error('MCP_CONFIG_PATH environment variable is required');
+}
 
 // Initialize the server with config
 createServer(configPath).then(({ server: s, cleanup: c }) => {

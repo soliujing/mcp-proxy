@@ -13,8 +13,11 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { createServer } from "./mcp-proxy.js";
 
 async function main() {
+  if (!process.env.MCP_CONFIG_PATH) {
+    throw new Error('MCP_CONFIG_PATH environment variable is required');
+  }
   const transport = new StdioServerTransport();
-  const { server, cleanup } = await createServer();
+  const { server, cleanup } = await createServer(process.env.MCP_CONFIG_PATH);
 
   await server.connect(transport);
 
