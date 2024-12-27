@@ -2,6 +2,7 @@
   "name": "mcp-proxy-server",
   "version": "0.1.0",
   "author": "Adam Wattis",
+  "license": "MIT",
   "description": "An MCP proxy server that aggregates and serves multiple MCP resource servers through a single interface",
   "private": true,
   "type": "module",
