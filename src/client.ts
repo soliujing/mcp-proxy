@@ -27,7 +27,7 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
           });
       }
     } catch (error) {
-      console.error(`Failed to connect to ${server.name}:`, error);
+      console.error(`Failed to create transport ${server.transport.type || 'stdio'} to ${server.name}:`, error);
     }
 
     if (!transport) {
@@ -46,17 +46,20 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
       }
     });
 
-    await client.connect(transport);
-    console.log(`Connected to server: ${server.name}`);
+    try {
+      await client.connect(transport);
+      console.log(`Connected to server: ${server.name}`);
 
-    clients.push({
-      client,
-      name: server.name,
-      cleanup: async () => {
-        await transport.close();
-      }
-    });
-
+      clients.push({
+        client,
+        name: server.name,
+        cleanup: async () => {
+          await transport.close();
+        }
+      });
+    } catch (error) {
+      console.error(`Failed to connect to ${server.name}:`, error);
+    }
   }
 
   return clients;
