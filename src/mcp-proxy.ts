@@ -20,6 +20,9 @@ import {
 import { createClients, ConnectedClient } from './client.js';
 import { Config, loadConfig } from './config.js';
 import { z } from 'zod';
+import * as eventsource from 'eventsource';
+
+global.EventSource = eventsource.EventSource
 
 export const createServer = async () => {
   // Load configuration and connect to servers
