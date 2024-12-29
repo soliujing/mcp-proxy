@@ -47,7 +47,8 @@ Example config structure:
       "name": "Server 2",
       "transport": {
         "command": "server2-command",
-        "args": ["--option1", "value1"]
+        "args": ["--option1", "value1"],
+        "env": ["SECRET_API_KEY"]
       }
     },
     {
