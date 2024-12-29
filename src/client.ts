@@ -86,7 +86,7 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
           try {
             await client.close()
           } catch { }
-          console.log(`Retry connection to ${server.name} in ${waitFor}ms (${count} / ${retries}})`);
+          console.log(`Retry connection to ${server.name} in ${waitFor}ms (${count}/${retries})`);
           await sleep(waitFor)
         }
       }
