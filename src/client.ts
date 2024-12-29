@@ -21,9 +21,9 @@ const createClient = (server: ServerConfig): { client: Client | undefined, trans
       transport = new StdioClientTransport({
         command: server.transport.command,
         args: server.transport.args,
-        env: (server.transport.env || []).reduce((o, v) => ({
+        env: server.transport.env ? server.transport.env.reduce((o, v) => ({
           [v]: process.env[v] || ''
-        }), {})
+        }), {}) : undefined
       });
     }
   } catch (error) {
