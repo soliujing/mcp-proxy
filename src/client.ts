@@ -1,9 +1,10 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { ServerConfig } from './config.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import { ServerConfig } from './config.js';
 
+const sleep = (time: number) => new Promise<void>(resolve => setTimeout(() => resolve(), time))
 export interface ConnectedClient {
   client: Client;
   cleanup: () => Promise<void>;
@@ -46,20 +47,39 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
       }
     });
 
-    try {
-      await client.connect(transport);
-      console.log(`Connected to server: ${server.name}`);
+    const waitFor = 2500
+    const retries = 3
+    let count = 0
+    let retry = true
 
-      clients.push({
-        client,
-        name: server.name,
-        cleanup: async () => {
-          await transport.close();
+    while(retry) {
+
+      try {
+        await client.connect(transport);
+        console.log(`Connected to server: ${server.name}`);
+
+        clients.push({
+          client,
+          name: server.name,
+          cleanup: async () => {
+            await transport.close();
+          }
+        });
+
+        break
+
+      } catch (error) {
+        console.error(`Failed to connect to ${server.name}:`, error);
+        count++
+        retry = (count < retries)
+        if (retry) {
+          console.log(`Retry connection to ${server.name} in ${waitFor}ms`);
+          await sleep(waitFor)
         }
-      });
-    } catch (error) {
-      console.error(`Failed to connect to ${server.name}:`, error);
+      }
+
     }
+
   }
 
   return clients;
