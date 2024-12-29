@@ -49,6 +49,13 @@ Example config structure:
         "command": "server2-command",
         "args": ["--option1", "value1"]
       }
+    },
+    {
+      "name": "Example Server 3",
+      "transport": {
+        "type": "sse",
+        "url": "http://example.com/mcp"
+      }
     }
   ]
 }
