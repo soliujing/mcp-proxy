@@ -6,6 +6,7 @@ export type TransportConfigStdio = {
   type?: 'stdio'
   command: string;
   args?: string[];
+  env?: string[]
 }
 
 export type TransportConfigSSE = {

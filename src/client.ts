@@ -20,7 +20,10 @@ const createClient = (server: ServerConfig): { client: Client | undefined, trans
     } else {
       transport = new StdioClientTransport({
         command: server.transport.command,
-        args: server.transport.args
+        args: server.transport.args,
+        env: (server.transport.env || []).reduce((o, v) => ({
+          [v]: process.env[v] || ''
+        }), {})
       });
     }
   } catch (error) {
