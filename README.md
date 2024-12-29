@@ -54,7 +54,7 @@ Example config structure:
       "name": "Example Server 3",
       "transport": {
         "type": "sse",
-        "url": "http://example.com/mcp"
+        "url": "http://localhost:8080/sse"
       }
     }
   ]
@@ -81,6 +81,14 @@ npm run build
 For development with auto-rebuild:
 ```bash
 npm run watch
+```
+
+For development with continuous run:
+```bash
+# Stdio
+npm run dev
+# SSE
+npm run dev:sse
 ```
 
 ## Installation
