@@ -73,6 +73,9 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
         count++
         retry = (count < retries)
         if (retry) {
+          try {
+            await client.close()
+          } catch {}
           console.log(`Retry connection to ${server.name} in ${waitFor}ms`);
           await sleep(waitFor)
         }
