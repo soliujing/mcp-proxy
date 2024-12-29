@@ -15,8 +15,10 @@ app.get("/sse", async (req, res) => {
 
   server.onclose = async () => {
     await cleanup();
-    await server.close();
-    process.exit(0);
+    if (process.env.KEEP_SERVER_OPEN !== "1") {
+      await server.close();
+      process.exit(0);
+    }
   };
 });
 
