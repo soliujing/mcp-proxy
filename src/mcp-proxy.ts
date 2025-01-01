@@ -53,7 +53,7 @@ export const createServer = async () => {
   server.setRequestHandler(ListToolsRequestSchema, async (request) => {
     const allTools: Tool[] = [];
     toolToClientMap.clear();
-    
+
     for (const connectedClient of connectedClients) {
       try {
         const result = await connectedClient.client.request(
@@ -65,7 +65,7 @@ export const createServer = async () => {
           },
           ListToolsResultSchema
         );
-        
+
         if (result.tools) {
           const toolsWithSource = result.tools.map(tool => {
             toolToClientMap.set(tool.name, connectedClient);
@@ -88,7 +88,7 @@ export const createServer = async () => {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     const clientForTool = toolToClientMap.get(name);
-    
+
     if (!clientForTool) {
       throw new Error(`Unknown tool: ${name}`);
     }
@@ -120,7 +120,7 @@ export const createServer = async () => {
   server.setRequestHandler(GetPromptRequestSchema, async (request) => {
     const { name } = request.params;
     const clientForPrompt = promptToClientMap.get(name);
-    
+
     if (!clientForPrompt) {
       throw new Error(`Unknown prompt: ${name}`);
     }
@@ -155,7 +155,7 @@ export const createServer = async () => {
   server.setRequestHandler(ListPromptsRequestSchema, async (request) => {
     const allPrompts: z.infer<typeof ListPromptsResultSchema>['prompts'] = [];
     promptToClientMap.clear();
-    
+
     for (const connectedClient of connectedClients) {
       try {
         const result = await connectedClient.client.request(
@@ -170,7 +170,7 @@ export const createServer = async () => {
           },
           ListPromptsResultSchema
         );
-        
+
         if (result.prompts) {
           const promptsWithSource = result.prompts.map(prompt => {
             promptToClientMap.set(prompt.name, connectedClient);
@@ -186,7 +186,7 @@ export const createServer = async () => {
       }
     }
 
-    return { 
+    return {
       prompts: allPrompts,
       nextCursor: request.params?.cursor
     };
@@ -196,7 +196,7 @@ export const createServer = async () => {
   server.setRequestHandler(ListResourcesRequestSchema, async (request) => {
     const allResources: z.infer<typeof ListResourcesResultSchema>['resources'] = [];
     resourceToClientMap.clear();
-    
+
     for (const connectedClient of connectedClients) {
       try {
         const result = await connectedClient.client.request(
@@ -209,7 +209,7 @@ export const createServer = async () => {
           },
           ListResourcesResultSchema
         );
-        
+
         if (result.resources) {
           const resourcesWithSource = result.resources.map(resource => {
             resourceToClientMap.set(resource.uri, connectedClient);
@@ -225,7 +225,7 @@ export const createServer = async () => {
       }
     }
 
-    return { 
+    return {
       resources: allResources,
       nextCursor: undefined
     };
@@ -235,7 +235,7 @@ export const createServer = async () => {
   server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
     const { uri } = request.params;
     const clientForResource = resourceToClientMap.get(uri);
-    
+
     if (!clientForResource) {
       throw new Error(`Unknown resource: ${uri}`);
     }
@@ -260,7 +260,7 @@ export const createServer = async () => {
   // List Resource Templates Handler
   server.setRequestHandler(ListResourceTemplatesRequestSchema, async (request) => {
     const allTemplates: ResourceTemplate[] = [];
-    
+
     for (const connectedClient of connectedClients) {
       try {
         const result = await connectedClient.client.request(
@@ -275,7 +275,7 @@ export const createServer = async () => {
           },
           ListResourceTemplatesResultSchema
         );
-        
+
         if (result.resourceTemplates) {
           const templatesWithSource = result.resourceTemplates.map(template => ({
             ...template,
@@ -289,7 +289,7 @@ export const createServer = async () => {
       }
     }
 
-    return { 
+    return {
       resourceTemplates: allTemplates,
       nextCursor: request.params?.cursor
     };
