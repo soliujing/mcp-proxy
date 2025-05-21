@@ -1,5 +1,6 @@
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
+import { logger } from "./logger.js";
 
 
 export type TransportConfigStdio = {
@@ -30,7 +31,7 @@ export const loadConfig = async (): Promise<Config> => {
     const fileContents = await readFile(configPath, 'utf-8');
     return JSON.parse(fileContents);
   } catch (error) {
-    console.error('Error loading config.json:', error);
+    logger.error('Error loading config.json:', error);
     // Return empty config if file doesn't exist
     return { servers: [] };
   }

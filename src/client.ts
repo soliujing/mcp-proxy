@@ -3,6 +3,7 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { ServerConfig } from './config.js';
+import { logger } from "./logger.js";
 
 const sleep = (time: number) => new Promise<void>(resolve => setTimeout(() => resolve(), time))
 export interface ConnectedClient {
@@ -27,11 +28,11 @@ const createClient = (server: ServerConfig): { client: Client | undefined, trans
       });
     }
   } catch (error) {
-    console.error(`Failed to create transport ${server.transport.type || 'stdio'} to ${server.name}:`, error);
+    logger.error(`Failed to create transport ${server.transport.type || 'stdio'} to ${server.name}:`, error);
   }
 
   if (!transport) {
-    console.warn(`Transport ${server.name} not available.`)
+    logger.warn(`Transport ${server.name} not available.`)
     return { transport: undefined, client: undefined }
   }
 
@@ -53,7 +54,7 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
   const clients: ConnectedClient[] = [];
 
   for (const server of servers) {
-    console.log(`Connecting to server: ${server.name}`);
+    logger.log(`Connecting to server: ${server.name}`);
 
     const waitFor = 2500
     const retries = 3
@@ -69,7 +70,7 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
 
       try {
         await client.connect(transport);
-        console.log(`Connected to server: ${server.name}`);
+        logger.log(`Connected to server: ${server.name}`);
 
         clients.push({
           client,
@@ -82,14 +83,14 @@ export const createClients = async (servers: ServerConfig[]): Promise<ConnectedC
         break
 
       } catch (error) {
-        console.error(`Failed to connect to ${server.name}:`, error);
+        logger.error(`Failed to connect to ${server.name}:`, error);
         count++
         retry = (count < retries)
         if (retry) {
           try {
             await client.close()
           } catch { }
-          console.log(`Retry connection to ${server.name} in ${waitFor}ms (${count}/${retries})`);
+          logger.log(`Retry connection to ${server.name} in ${waitFor}ms (${count}/${retries})`);
           await sleep(waitFor)
         }
       }

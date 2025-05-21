@@ -1,4 +1,5 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { logger } from "./logger.js";
 import {
   CallToolRequestSchema,
   GetPromptRequestSchema,
@@ -28,7 +29,7 @@ export const createServer = async () => {
   // Load configuration and connect to servers
   const config = await loadConfig();
   const connectedClients = await createClients(config.servers);
-  console.log(`Connected to ${connectedClients.length} servers`);
+  logger.log(`Connected to ${connectedClients.length} servers`);
 
   // Maps to track which client owns which resource
   const toolToClientMap = new Map<string, ConnectedClient>();
@@ -77,7 +78,7 @@ export const createServer = async () => {
           allTools.push(...toolsWithSource);
         }
       } catch (error) {
-        console.error(`Error fetching tools from ${connectedClient.name}:`, error);
+        logger.error(`Error fetching tools from ${connectedClient.name}:`, error);
       }
     }
 
@@ -94,7 +95,7 @@ export const createServer = async () => {
     }
 
     try {
-      console.log('Forwarding tool call:', name);
+      logger.log('Forwarding tool call:', name);
 
       // Use the correct schema for tool calls
       return await clientForTool.client.request(
@@ -111,7 +112,7 @@ export const createServer = async () => {
         CompatibilityCallToolResultSchema
       );
     } catch (error) {
-      console.error(`Error calling tool through ${clientForTool.name}:`, error);
+      logger.error(`Error calling tool through ${clientForTool.name}:`, error);
       throw error;
     }
   });
@@ -126,7 +127,7 @@ export const createServer = async () => {
     }
 
     try {
-      console.log('Forwarding prompt request:', name);
+      logger.log('Forwarding prompt request:', name);
 
       // Match the exact structure from the example code
       const response = await clientForPrompt.client.request(
@@ -143,10 +144,10 @@ export const createServer = async () => {
         GetPromptResultSchema
       );
 
-      console.log('Prompt result:', response);
+      logger.log('Prompt result:', response);
       return response;
     } catch (error) {
-      console.error(`Error getting prompt from ${clientForPrompt.name}:`, error);
+      logger.error(`Error getting prompt from ${clientForPrompt.name}:`, error);
       throw error;
     }
   });
@@ -182,7 +183,7 @@ export const createServer = async () => {
           allPrompts.push(...promptsWithSource);
         }
       } catch (error) {
-        console.error(`Error fetching prompts from ${connectedClient.name}:`, error);
+        logger.error(`Error fetching prompts from ${connectedClient.name}:`, error);
       }
     }
 
@@ -221,7 +222,7 @@ export const createServer = async () => {
           allResources.push(...resourcesWithSource);
         }
       } catch (error) {
-        console.error(`Error fetching resources from ${connectedClient.name}:`, error);
+        logger.error(`Error fetching resources from ${connectedClient.name}:`, error);
       }
     }
 
@@ -252,7 +253,7 @@ export const createServer = async () => {
         ReadResourceResultSchema
       );
     } catch (error) {
-      console.error(`Error reading resource from ${clientForResource.name}:`, error);
+      logger.error(`Error reading resource from ${clientForResource.name}:`, error);
       throw error;
     }
   });
@@ -285,7 +286,7 @@ export const createServer = async () => {
           allTemplates.push(...templatesWithSource);
         }
       } catch (error) {
-        console.error(`Error fetching resource templates from ${connectedClient.name}:`, error);
+        logger.error(`Error fetching resource templates from ${connectedClient.name}:`, error);
       }
     }
 
