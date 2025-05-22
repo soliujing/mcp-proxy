@@ -1,6 +1,7 @@
 import { createLogger, format, transports } from 'winston';
 import 'winston-daily-rotate-file';
 import path from 'path';
+import util from 'util';
 
 const logLevel = (process.env.DEBUG_LEVEL || 'info').toLowerCase();
 
@@ -26,23 +27,39 @@ const baseLogger = createLogger({
 // Add wrapper to capture file & line
 function attachFileLine(level: keyof typeof baseLogger) {
     const original = baseLogger[level].bind(baseLogger);
+
     return (...args: any[]) => {
         const stack = new Error().stack?.split('\n') || [];
-        const callSite = stack.find((line) => !line.includes('logger.ts') && line.includes('at '));
+        const callSite = stack.find(line =>
+            !line.includes('logger.ts') && line.includes('at ')
+        );
         const match = callSite?.match(/\((.*):(\d+):\d+\)/) || callSite?.match(/at (.*):(\d+):\d+/);
         const [filePath, lineNumber] = match?.slice(1, 3) || [];
-        
-        // Inject metadata
+
         const meta = {
             file: path.basename(filePath || ''),
             line: lineNumber,
         };
-        
+
+        // Format arguments like console.log does
+        let message = '';
+        let extraMeta = {};
+
         if (typeof args[0] === 'string') {
-            original({ level, message: args[0], ...meta });
+            message = util.format(...args);
+        } else if (typeof args[0] === 'object') {
+            message = JSON.stringify(args[0]);
+            extraMeta = args[1] || {};
         } else {
-            original({ level, ...args[0], ...meta });
+            message = String(args[0]);
         }
+
+        original({
+            level,
+            message,
+            ...meta,
+            ...extraMeta,
+        });
     };
 }
 
