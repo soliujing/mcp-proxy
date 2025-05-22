@@ -6,6 +6,7 @@
         "name": "Debug dev:sse",
         "runtimeExecutable": "npm",
         "runtimeArgs": ["run", "dev:sse"],
+        "preLaunchTask": "npm: install",
         "console": "integratedTerminal"
         }
     ]
